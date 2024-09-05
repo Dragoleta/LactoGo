@@ -1,4 +1,4 @@
-package ifpe.mobile.lactgoGo.pages
+package ifpe.mobile.lactgoGo.src.ui.theme.pages
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

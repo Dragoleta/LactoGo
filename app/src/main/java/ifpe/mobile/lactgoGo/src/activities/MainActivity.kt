@@ -1,11 +1,13 @@
-package ifpe.mobile.lactgoGo
+package ifpe.mobile.lactgoGo.src.activities
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,24 +19,27 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import ifpe.mobile.lactgoGo.pages.ExplorePageComp
-import ifpe.mobile.lactgoGo.ui.theme.MyApplicationTheme
+import ifpe.mobile.lactgoGo.src.ui.theme.pages.ExplorePageComp
+import ifpe.mobile.lactgoGo.src.ui.theme.MyApplicationTheme
+import androidx.compose.foundation.layout.Box
+
+import android.Manifest
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission(), onResult = {} )
+
             MyApplicationTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
                         TopAppBar(
-                            title = { Text("My App") },
+                           title = { Text("LactoGo") },
                             navigationIcon = {
-                                // Add navigation icon here
                                 NavigationIcon(
                                     icon = Icons.Default.Menu,
                                     onClick = { /* Handle navigation icon click */ }
@@ -43,7 +48,11 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 ) { innerPadding ->
-                    ExplorePageComp()
+                    Box(modifier = Modifier.padding(innerPadding)) {
+                        launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                        ExplorePageComp()
+
+                    }
                 }
             }
         }

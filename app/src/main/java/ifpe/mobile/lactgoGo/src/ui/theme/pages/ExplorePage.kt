@@ -1,4 +1,4 @@
-package ifpe.mobile.lactgoGo.pages
+package ifpe.mobile.lactgoGo.src.ui.theme.pages
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable
