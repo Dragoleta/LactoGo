@@ -19,11 +19,15 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import ifpe.mobile.lactgoGo.src.ui.theme.pages.ExplorePageComp
+import ifpe.mobile.lactgoGo.src.ui.pages.ExplorePageComp
 import ifpe.mobile.lactgoGo.src.ui.theme.MyApplicationTheme
 import androidx.compose.foundation.layout.Box
 
 import android.Manifest
+import androidx.activity.viewModels
+import androidx.compose.runtime.remember
+import ifpe.mobile.lactgoGo.src.MVM.MainViewModel
+import ifpe.mobile.lactgoGo.src.database.db.FirebaseDB
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -32,6 +36,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission(), onResult = {} )
+            val viewModel : MainViewModel by viewModels()
+            val fbDB = remember { FirebaseDB(viewModel) }
 
             MyApplicationTheme {
                 Scaffold(
@@ -50,7 +56,7 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
                         launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-                        ExplorePageComp()
+                        ExplorePageComp(database = fbDB, viewModel = viewModel)
 
                     }
                 }
