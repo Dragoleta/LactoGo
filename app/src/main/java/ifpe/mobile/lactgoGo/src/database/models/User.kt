@@ -8,6 +8,7 @@ class FBUser {
     var name: String? = null
     var savedAddress: List<String>? = null
     var email: String? = null
+//    var userType: Boolean
 }
 
 fun FBUser.toUser(): User? {
