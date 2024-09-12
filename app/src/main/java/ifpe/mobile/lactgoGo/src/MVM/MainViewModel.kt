@@ -9,7 +9,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import ifpe.mobile.lactgoGo.src.database.db.FirebaseDB
-import ifpe.mobile.lactgoGo.src.database.models.Restaurant
+import ifpe.mobile.lactgoGo.src.database.models.RestaurantModel
 
 
 class MainViewModel : ViewModel(),  FirebaseDB.Listener {
@@ -17,7 +17,7 @@ class MainViewModel : ViewModel(),  FirebaseDB.Listener {
     private val _user = mutableStateOf (User(name="", email = "", savedAddress = null))
 
 
-    private var _restaurants = mutableStateListOf<Restaurant>()
+    private var _restaurants = mutableStateListOf<RestaurantModel>()
 
     val user : User
         get() = _user.value
@@ -36,13 +36,13 @@ class MainViewModel : ViewModel(),  FirebaseDB.Listener {
         Firebase.auth.addAuthStateListener(listener)
     }
 
-    val restaurants : List<Restaurant> get() = _restaurants
+    val restaurants : List<RestaurantModel> get() = _restaurants
 
     override fun onUserLoaded(user: User) {
         _user.value = user
     }
 
-    override fun setRestaurants(rests: List<Restaurant>) {
+    override fun setRestaurants(rests: List<RestaurantModel>) {
         _restaurants.clear()
         _restaurants.addAll(rests)
     }

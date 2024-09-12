@@ -3,12 +3,14 @@ package ifpe.mobile.lactgoGo.src.database.db
 import FBUser
 import User
 import android.util.Log
-import androidx.compose.runtime.Composable
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
-import com.google.firebase.firestore.toObject
-import ifpe.mobile.lactgoGo.src.database.models.Restaurant
+import ifpe.mobile.lactgoGo.src.database.models.DishModel
+
+import ifpe.mobile.lactgoGo.src.database.models.RestaurantModel
+
 import toFBUser
 import toUser
 
@@ -17,7 +19,7 @@ class FirebaseDB(private val listener: Listener? = null) {
     private val db = Firebase.firestore
     interface Listener {
         fun onUserLoaded(user: User)
-        fun setRestaurants(rests: List<Restaurant>)
+        fun setRestaurants(rests: List<RestaurantModel>)
 //        fun onCityAdded(city: City)
 //        fun onCityRemoved(city: City)
     }
@@ -50,7 +52,10 @@ class FirebaseDB(private val listener: Listener? = null) {
     private fun getRestaurants() {
         val restaurantsRef = db.collection("restaurants")
         restaurantsRef.get().addOnSuccessListener { querySnapshot ->
-            val restaurants = querySnapshot.documents.mapNotNull { it.toObject(Restaurant::class.java) }
+            val restaurants = querySnapshot.documents.mapNotNull { document ->
+                val restaurant = document.toObject(RestaurantModel::class.java)
+                    restaurant?.copy(id = document.id)
+            }
             listener?.setRestaurants(restaurants)
         }.addOnFailureListener { exception ->
             Log.e("FirebaseDB", "Error fetching restaurants", exception)
@@ -58,13 +63,28 @@ class FirebaseDB(private val listener: Listener? = null) {
     }
 
 
-    fun saveRestaurant(restaurant: Restaurant) {
+    fun saveRestaurant(restaurant: RestaurantModel) {
         try {
+            println("Banana calling firebase")
             db.collection("restaurants").document().set(restaurant)
+            println("Banana calling back firebase")
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
+
+    fun addDishToRestaurant(
+        dish:DishModel ,restaurantId:String) {
+        try {
+            db.collection("restaurants")
+                .document( restaurantId )
+                .update("menu", FieldValue.arrayUnion(dish))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+
 
 
 }

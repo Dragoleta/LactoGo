@@ -26,8 +26,12 @@ import androidx.compose.foundation.layout.Box
 import android.Manifest
 import androidx.activity.viewModels
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.compose.rememberNavController
 import ifpe.mobile.lactgoGo.src.MVM.MainViewModel
 import ifpe.mobile.lactgoGo.src.database.db.FirebaseDB
+import ifpe.mobile.lactgoGo.src.ui.navegation.BottomNavBar
+import ifpe.mobile.lactgoGo.src.ui.navegation.MainNavHost
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -36,6 +40,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission(), onResult = {} )
+            val navController = rememberNavController()
+            val context = LocalContext.current
             val viewModel : MainViewModel by viewModels()
             val fbDB = remember { FirebaseDB(viewModel) }
 
@@ -52,11 +58,14 @@ class MainActivity : ComponentActivity() {
                                 )
                             },
                         )
+                    },
+                    bottomBar = {
+                        BottomNavBar(navController = navController)
                     }
                 ) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
                         launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-                        ExplorePageComp(database = fbDB, viewModel = viewModel)
+                         MainNavHost(navController = navController, viewModel = viewModel, context = context, database = fbDB)
 
                     }
                 }
