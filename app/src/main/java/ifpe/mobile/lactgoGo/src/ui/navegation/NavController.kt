@@ -10,6 +10,7 @@ import ifpe.mobile.lactgoGo.src.MVM.MainViewModel
 import ifpe.mobile.lactgoGo.src.database.db.FirebaseDB
 import ifpe.mobile.lactgoGo.src.ui.pages.ExplorePageComp
 import ifpe.mobile.lactgoGo.src.ui.pages.RegisterPlacePage
+import ifpe.mobile.lactgoGo.src.ui.pages.RestaurantInfoPage
 
 
 @Composable
@@ -23,6 +24,9 @@ fun MainNavHost(navController: NavHostController, viewModel: MainViewModel,
             ExplorePageComp(viewModel = viewModel, modifier = modifier, context = context, navController = navController)
         }
         composable("register") { RegisterPlacePage(viewModel = viewModel, modifier = modifier, context = context, database = database) }
+        composable("rest-info") { RestaurantInfoPage(
+            viewModel = viewModel, modifier = modifier, context = context
+        ) }
 
     //        composable(route = BottomNavItem.ListPage.route) {
 //            ListPage(viewModel = viewModel, modifier = modifier, context = context)

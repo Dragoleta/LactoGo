@@ -18,6 +18,7 @@ class MainViewModel : ViewModel(),  FirebaseDB.Listener {
 
 
     private var _restaurants = mutableStateListOf<RestaurantModel>()
+    private var _restaurant =  RestaurantModel()
 
     val user : User
         get() = _user.value
@@ -37,6 +38,7 @@ class MainViewModel : ViewModel(),  FirebaseDB.Listener {
     }
 
     val restaurants : List<RestaurantModel> get() = _restaurants
+    val restaurant : RestaurantModel get() = _restaurant
 
     override fun onUserLoaded(user: User) {
         _user.value = user
@@ -46,6 +48,11 @@ class MainViewModel : ViewModel(),  FirebaseDB.Listener {
         _restaurants.clear()
         _restaurants.addAll(rests)
     }
+
+    fun setRestaurant(rests: RestaurantModel) {
+        _restaurant = rests
+    }
+
 //    override fun onCityAdded(city: City) {
 //        _cities.add(city)
 //    }

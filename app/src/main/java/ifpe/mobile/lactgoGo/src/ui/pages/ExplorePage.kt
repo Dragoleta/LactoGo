@@ -2,6 +2,7 @@ package ifpe.mobile.lactgoGo.src.ui.pages
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -46,27 +48,28 @@ fun PlaceItemCard(
 ) {
 
     Row(
-        modifier = modifier
+        modifier
             .fillMaxWidth()
             .padding(8.dp, 8.dp, 8.dp, 8.dp)
+            .background(color = Color.Gray)
             .clickable { onSelect() },
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        Spacer(modifier = Modifier.size(12.dp))
+        Spacer(modifier = modifier.size(12.dp))
         Column(modifier = modifier.weight(1f)) {
             Text(
-                modifier = Modifier,
+                modifier = modifier,
                 text = place.name,
                 fontSize = 24.sp
             )
             Text(
-                modifier = Modifier,
+                modifier = modifier,
                 text = place.address,
                 fontSize = 16.sp
             )
             Text(
-                modifier = Modifier,
+                modifier = modifier,
                 text = "${place.openingTime}",
                 fontSize = 16.sp
             )
@@ -105,14 +108,17 @@ fun ExplorePageComp(modifier: Modifier = Modifier, viewModel: MainViewModel, con
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(8.dp)
+                .padding(20.dp)
         ) {
-            println("Banana $restaurantList")
             items(restaurantList) {
                 restaurant -> PlaceItemCard(
                 place = restaurant,
                 onSelect = {
-                    Toast.makeText(context, "Opening ${restaurant.name}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Opening ${restaurant.id}", Toast.LENGTH_LONG).show()
+                          println("Banana $restaurant")
+                        viewModel.setRestaurant(rests = restaurant)
+                       navController.navigate("rest-info")
+
                 },
                 onPin = {
                     Toast.makeText(context, "Place pinned", Toast.LENGTH_LONG).show()
