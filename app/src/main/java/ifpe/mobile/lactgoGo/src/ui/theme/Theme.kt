@@ -1,4 +1,4 @@
-package ifpe.mobile.lactgoGo.ui.theme
+package ifpe.mobile.lactgoGo.src.ui.theme
 
 import android.app.Activity
 import android.os.Build
