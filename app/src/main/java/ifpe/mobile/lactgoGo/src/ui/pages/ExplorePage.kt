@@ -1,6 +1,10 @@
 package ifpe.mobile.lactgoGo.src.ui.pages
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,11 +36,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import ifpe.mobile.lactgoGo.src.MVM.MainViewModel
-import ifpe.mobile.lactgoGo.src.database.models.AddressModel
+import ifpe.mobile.lactgoGo.src.activities.RegisterUserActivity
 import ifpe.mobile.lactgoGo.src.database.models.RestaurantModel
 
 
@@ -67,7 +73,7 @@ fun PlaceItemCard(
             )
             Text(
                 modifier = modifier,
-                text = "${place.address?.street}, ${place.address?.number} - ${place.address?.district}" ?: "",
+                text = "${place.address?.street}, ${place.address?.number} - ${place.address?.district}",
                 fontSize = 16.sp
             )
             Text(
@@ -87,6 +93,7 @@ fun PlaceItemCard(
 fun ExplorePageComp(modifier: Modifier = Modifier, viewModel: MainViewModel, context: Context, navController: NavController) {
     var address by rememberSaveable { mutableStateOf("") }
     val restaurantList by remember { mutableStateOf(viewModel.restaurants) }
+    val activity = LocalContext.current as? Activity
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -123,6 +130,17 @@ fun ExplorePageComp(modifier: Modifier = Modifier, viewModel: MainViewModel, con
 
                 },
                 onPin = {
+//TODO: Add launch google maps
+
+                    activity?.startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("http://maps.google.com/maps/dir/?api=1" +
+                                    "&destination=${restaurant.name}, ${restaurant.address?.city}, ${restaurant.address?.country}")
+                        ).setFlags(
+                            FLAG_ACTIVITY_SINGLE_TOP
+                        )
+                    )
                     Toast.makeText(context, "Place pinned", Toast.LENGTH_LONG).show()
                 },
             )
