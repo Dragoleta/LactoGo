@@ -4,7 +4,7 @@ import com.google.firebase.firestore.PropertyName
 data class RestaurantModel(
     var id: String = "",
     @PropertyName("name") var name: String = "",
-    @PropertyName("address") var address: String = "",
+    @PropertyName("address") var address: AddressModel? = null,
     @PropertyName("rating") val rating: Double = 0.0,
     @PropertyName("contacts") var contacts: List<String> = emptyList(),
     @PropertyName("openingTime") var openingTime: Int = 8,

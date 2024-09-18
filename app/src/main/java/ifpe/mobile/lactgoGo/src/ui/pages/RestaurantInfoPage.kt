@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ifpe.mobile.lactgoGo.src.MVM.MainViewModel
-import ifpe.mobile.lactgoGo.src.ui.composables.DishIndoCard
+import ifpe.mobile.lactgoGo.src.ui.composables.DishInfoCard
 import ifpe.mobile.lactgoGo.src.ui.composables.RestaurantInfoCard
 
 @Composable
@@ -38,7 +38,7 @@ fun RestaurantInfoPage(
                 .fillMaxSize()
                 .padding(8.dp)
         ) {
-            items(dishes) { dish -> DishIndoCard(modifier = modifier, dish = dish) }
+            items(dishes) { dish -> DishInfoCard(modifier = modifier, dish = dish) }
         }
     }
 

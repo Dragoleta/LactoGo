@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import ifpe.mobile.lactgoGo.src.MVM.MainViewModel
+import ifpe.mobile.lactgoGo.src.database.models.AddressModel
 import ifpe.mobile.lactgoGo.src.database.models.RestaurantModel
 
 
@@ -46,6 +47,7 @@ fun PlaceItemCard(
     onSelect: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    place.address?.street
 
     Row(
         modifier
@@ -65,12 +67,12 @@ fun PlaceItemCard(
             )
             Text(
                 modifier = modifier,
-                text = place.address,
+                text = "${place.address?.street}, ${place.address?.number} - ${place.address?.district}" ?: "",
                 fontSize = 16.sp
             )
             Text(
                 modifier = modifier,
-                text = "${place.openingTime}",
+                text = "${place.openingTime} - ${place.closingTime}",
                 fontSize = 16.sp
             )
 

@@ -1,12 +1,14 @@
+import ifpe.mobile.lactgoGo.src.database.models.AddressModel
+
 data class User(
     val name: String,
     val email: String,
-    val savedAddress: List<String>? = null,
+    val savedAddress: AddressModel? = null,
 )
 
 class FBUser {
     var name: String? = null
-    var savedAddress: List<String>? = null
+    var savedAddress: AddressModel? = null
     var email: String? = null
 //    var userType: Boolean
 }

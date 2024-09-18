@@ -23,12 +23,11 @@ fun MainNavHost(navController: NavHostController, viewModel: MainViewModel,
         composable(route = BottomNavItem.HomePage.route) {
             ExplorePageComp(viewModel = viewModel, modifier = modifier, context = context, navController = navController)
         }
-        composable("register") { RegisterPlacePage(viewModel = viewModel, modifier = modifier, context = context, database = database) }
-        composable("rest-info") { RestaurantInfoPage(
-            viewModel = viewModel, modifier = modifier, context = context
-        ) }
+        composable("register") { RegisterPlacePage( modifier = modifier, database = database, navController = navController ) }
+        composable("rest-info") { RestaurantInfoPage(viewModel = viewModel, modifier = modifier, context = context)
+    }
 
-    //        composable(route = BottomNavItem.ListPage.route) {
+//        composable(route = BottomNavItem.ListPage.route) {
 //            ListPage(viewModel = viewModel, modifier = modifier, context = context)
 //        }
 //        composable(route = BottomNavItem.MapPage.route) {

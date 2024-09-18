@@ -29,7 +29,7 @@ import ifpe.mobile.lactgoGo.R
 import ifpe.mobile.lactgoGo.src.database.models.DishModel
 
 @Composable
-fun DishIndoCard(
+fun DishInfoCard(
     dish: DishModel,
     modifier: Modifier
 ) {

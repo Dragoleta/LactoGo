@@ -1,8 +1,5 @@
 package ifpe.mobile.lactgoGo.src.database.models
 
-
-
-
 data class DishModel(
     var name: String = "",
     var price: Double = 0.0,

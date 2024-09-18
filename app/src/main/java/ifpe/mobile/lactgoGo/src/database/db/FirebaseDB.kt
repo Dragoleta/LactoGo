@@ -49,7 +49,7 @@ class FirebaseDB(private val listener: Listener? = null) {
      }
 
 
-    private fun getRestaurants() {
+     fun getRestaurants() {
         val restaurantsRef = db.collection("restaurants")
         restaurantsRef.get().addOnSuccessListener { querySnapshot ->
             val restaurants = querySnapshot.documents.mapNotNull { document ->
@@ -65,9 +65,13 @@ class FirebaseDB(private val listener: Listener? = null) {
 
     fun saveRestaurant(restaurant: RestaurantModel) {
         try {
-            println("Banana calling firebase")
             db.collection("restaurants").document().set(restaurant)
-            println("Banana calling back firebase")
+                .addOnSuccessListener {
+                    Log.d("Firestore", "Document successfully written!")
+                }
+                .addOnFailureListener { e ->
+                    Log.w("Firestore", "Error writing document", e)
+                }
         } catch (e: Exception) {
             e.printStackTrace()
         }
