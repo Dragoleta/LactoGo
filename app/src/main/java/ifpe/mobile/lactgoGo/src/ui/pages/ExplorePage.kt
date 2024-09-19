@@ -39,10 +39,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import ifpe.mobile.lactgoGo.src.MVM.MainViewModel
-import ifpe.mobile.lactgoGo.src.activities.RegisterUserActivity
 import ifpe.mobile.lactgoGo.src.database.models.RestaurantModel
 
 
@@ -123,14 +121,11 @@ fun ExplorePageComp(modifier: Modifier = Modifier, viewModel: MainViewModel, con
                 restaurant -> PlaceItemCard(
                 place = restaurant,
                 onSelect = {
-                    Toast.makeText(context, "Opening ${restaurant.id}", Toast.LENGTH_LONG).show()
-                          println("Banana $restaurant")
-                        viewModel.setRestaurant(rests = restaurant)
-                       navController.navigate("rest-info")
+                    viewModel.setRestaurant(rests = restaurant)
+                   navController.navigate("rest-info")
 
                 },
                 onPin = {
-//TODO: Add launch google maps
 
                     activity?.startActivity(
                         Intent(

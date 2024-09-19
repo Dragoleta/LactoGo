@@ -20,8 +20,6 @@ class FirebaseDB(private val listener: Listener? = null) {
     interface Listener {
         fun onUserLoaded(user: User)
         fun setRestaurants(rests: List<RestaurantModel>)
-//        fun onCityAdded(city: City)
-//        fun onCityRemoved(city: City)
     }
 
     init {
@@ -78,11 +76,22 @@ class FirebaseDB(private val listener: Listener? = null) {
     }
 
     fun addDishToRestaurant(
-        dish:DishModel ,restaurantId:String) {
+        dish:DishModel, restaurantId:String) {
         try {
             db.collection("restaurants")
                 .document( restaurantId )
                 .update("menu", FieldValue.arrayUnion(dish))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun addCommentToRestaurant(
+        comment : String, restaurantId : String) {
+        try {
+            db.collection("restaurants")
+                .document( restaurantId )
+                .update("comments", FieldValue.arrayUnion(comment))
         } catch (e: Exception) {
             e.printStackTrace()
         }

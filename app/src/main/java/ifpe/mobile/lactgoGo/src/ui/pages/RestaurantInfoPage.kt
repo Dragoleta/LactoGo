@@ -1,6 +1,5 @@
 package ifpe.mobile.lactgoGo.src.ui.pages
 
-import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -17,31 +16,16 @@ import ifpe.mobile.lactgoGo.src.ui.composables.DishInfoCard
 import ifpe.mobile.lactgoGo.src.ui.composables.RestaurantInfoCard
 
 @Composable
-fun RestaurantInfoPage(
-    context: Context,
-    modifier :Modifier,
-    viewModel : MainViewModel
-) {
+fun RestaurantInfoPage( modifier :Modifier, viewModel : MainViewModel ) {
     val restaurant = viewModel.restaurant
     val dishes = restaurant.menu
 
-
-    Column (
-        modifier.padding(top = 15.dp, bottom = 30.dp, start = 20.dp, end=20.dp)
-    ) {
-
+    Column ( modifier.padding(top = 15.dp, bottom = 30.dp, start = 20.dp, end=20.dp) ) {
         RestaurantInfoCard( modifier = modifier, restaurant = restaurant)
-
         HorizontalDivider(modifier.height(15.dp), color = Color.Transparent)
-        LazyColumn(
-            modifier
-                .fillMaxSize()
-                .padding(8.dp)
-        ) {
+        LazyColumn( modifier.fillMaxSize().padding(8.dp) ) {
             items(dishes) { dish -> DishInfoCard(modifier = modifier, dish = dish) }
         }
+
     }
-
-
-
 }

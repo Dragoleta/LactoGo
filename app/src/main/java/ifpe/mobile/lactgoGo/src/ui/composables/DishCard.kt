@@ -35,7 +35,7 @@ fun DishInfoCard(
 ) {
     Card(
         modifier = Modifier
-            .padding(top = 16.dp, bottom = 16.dp,end = 5.dp, start = 5.dp)
+            .padding(top = 16.dp, bottom = 16.dp, end = 5.dp, start = 5.dp)
             .fillMaxWidth()
             .height(125.dp),
         shape = RoundedCornerShape(8.dp),
@@ -54,14 +54,6 @@ fun DishInfoCard(
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
-
-                    VerticalDivider(modifier = Modifier.height(7.dp), color = Color.Transparent)
-                    Text(
-                        text = dish.description,
-                        fontSize = 16.sp,
-                        color = Color.White
-                    )
-
                     VerticalDivider(modifier = Modifier.height(10.dp),color = Color.Transparent)
                     Row(modifier.width(175.dp)) {
                         for (ingredient in dish.ingredients) {
@@ -69,13 +61,28 @@ fun DishInfoCard(
                             HorizontalDivider(modifier.width(10.dp))}
 
                     }
-                }
 
+                    VerticalDivider(modifier = Modifier.height(7.dp), color = Color.Transparent)
+                    Text(
+                        text = dish.description,
+                        fontSize = 16.sp,
+                        color = Color.White
+                    )
+                    Text(
+                        text = "R$ ${dish.price}",
+                        fontSize = 16.sp,
+                        color = Color.White
+                    )
+
+
+                }
                 HorizontalDivider(modifier = Modifier.width(20.dp),color = Color.Transparent)
                 Image(
                     painter = painterResource(id = R.drawable.sr2adb75e98031c),
                     contentDescription = stringResource(id = R.string.project_id),
-                    modifier = modifier.width(90.dp).height(90.dp)
+                    modifier = modifier
+                        .width(90.dp)
+                        .height(90.dp)
                 )
             }
 
