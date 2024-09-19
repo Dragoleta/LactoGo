@@ -24,7 +24,7 @@ fun MainNavHost(navController: NavHostController, viewModel: MainViewModel,
             ExplorePageComp(viewModel = viewModel, modifier = modifier, context = context, navController = navController)
         }
         composable("register") { RegisterPlacePage( modifier = modifier, database = database, navController = navController ) }
-        composable("rest-info") { RestaurantInfoPage(viewModel = viewModel, modifier = modifier, context = context)
+        composable("rest-info") { RestaurantInfoPage( viewModel = viewModel, modifier = modifier )
     }
 
 //        composable(route = BottomNavItem.ListPage.route) {
