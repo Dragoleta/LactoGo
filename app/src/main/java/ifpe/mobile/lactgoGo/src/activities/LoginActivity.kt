@@ -52,6 +52,7 @@ import com.google.firebase.auth.auth
 import com.google.firebase.auth.ktx.auth
 import ifpe.mobile.lactgoGo.R
 import ifpe.mobile.lactgoGo.src.database.db.FirebaseDB
+import ifpe.mobile.lactgoGo.src.ui.composables.ClickableText
 import ifpe.mobile.lactgoGo.src.ui.theme.MyApplicationTheme
 
 class LoginActivity : ComponentActivity() {
@@ -182,23 +183,16 @@ fun LoginPageComp(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(34.dp))
 
         // Botão de Registrar Usuário
-        Button(
+        ClickableText(
+            text = "Você não possui conta? Cadastre-se",
             onClick = {
                 activity?.startActivity(
                     Intent(activity, RegisterUserActivity::class.java).setFlags(
-                        FLAG_ACTIVITY_SINGLE_TOP
+                        Intent.FLAG_ACTIVITY_SINGLE_TOP
                     )
                 )
-            },
-        ) {
-            // Texto dentro do botão
-            Text(
-                text = "Primeiro acesso? Crie sua conta aqui.",
-                style = TextStyle(
-                    fontWeight = FontWeight(400),
-                    fontSize = 14.sp
-                )
-            )
-        }
+            }
+        )
+
     }
 }

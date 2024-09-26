@@ -2,6 +2,7 @@ package ifpe.mobile.lactgoGo.src.activities
 
 import User
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -23,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +50,7 @@ import com.google.firebase.auth.auth
 import ifpe.mobile.lactgoGo.R
 import ifpe.mobile.lactgoGo.src.ui.theme.MyApplicationTheme
 import ifpe.mobile.lactgoGo.src.database.db.FirebaseDB
+import ifpe.mobile.lactgoGo.src.ui.composables.ClickableText
 
 class RegisterUserActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,9 +108,9 @@ fun RegisterPageComp() {
             )
         )
 
-        Spacer(modifier = Modifier.height(76.dp))
+        Spacer(modifier = Modifier.height(54.dp))
 
-        OutlinedTextField(
+        TextField(
             value = name,
             onValueChange = { name = it },
             label = { Text(text = "Nome") },
@@ -120,7 +123,7 @@ fun RegisterPageComp() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
+        TextField(
             value = email,
             onValueChange = { email = it },
             label = { Text(text = "E-mail") },
@@ -133,7 +136,7 @@ fun RegisterPageComp() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
+        TextField(
             value = password,
             onValueChange = { password = it },
             visualTransformation = PasswordVisualTransformation(),
@@ -145,9 +148,9 @@ fun RegisterPageComp() {
                 .background(color = Color(0xFFF1F5F4), shape = RoundedCornerShape(size = 8.dp),)
         )
 
-        Spacer(modifier = Modifier.height(76.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
+        TextField(
             value = passwordConf,
             onValueChange = { passwordConf = it },
             visualTransformation = PasswordVisualTransformation(),
@@ -195,6 +198,15 @@ fun RegisterPageComp() {
                 )
             )
         }
-
+        ClickableText(
+            text = "Já possui conta? Entre",
+            onClick = {
+                activity?.startActivity(
+                    Intent(activity, LoginActivity::class.java).setFlags(
+                        Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    )
+                )
+            }
+        )
     }
 }

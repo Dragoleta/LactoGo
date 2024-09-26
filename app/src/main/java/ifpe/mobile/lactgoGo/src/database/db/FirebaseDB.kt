@@ -75,6 +75,20 @@ class FirebaseDB(private val listener: Listener? = null) {
         }
     }
 
+    fun updateUser(user: User) {
+        if (auth.currentUser == null) {
+            throw RuntimeException("User not logged in!")
+        }
+        val uid = auth.currentUser!!.uid
+        db.collection("users").document(uid).set(user.toFBUser())
+            .addOnSuccessListener {
+                Log.d("FirebaseDB", "User updated successfully!")
+            }
+            .addOnFailureListener { exception ->
+                Log.e("FirebaseDB", "Error updating user", exception)
+            }
+    }
+
     fun addDishToRestaurant(
         dish:DishModel, restaurantId:String) {
         try {
@@ -96,8 +110,6 @@ class FirebaseDB(private val listener: Listener? = null) {
             e.printStackTrace()
         }
     }
-
-
 
 
 }
