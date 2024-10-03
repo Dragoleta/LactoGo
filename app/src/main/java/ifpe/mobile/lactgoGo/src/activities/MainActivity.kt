@@ -19,7 +19,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import ifpe.mobile.lactgoGo.src.ui.pages.ExplorePageComp
 import ifpe.mobile.lactgoGo.src.ui.theme.MyApplicationTheme
 import androidx.compose.foundation.layout.Box
 

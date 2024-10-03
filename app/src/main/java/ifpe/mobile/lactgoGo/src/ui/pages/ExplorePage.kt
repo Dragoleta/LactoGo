@@ -3,7 +3,6 @@ package ifpe.mobile.lactgoGo.src.ui.pages
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -14,15 +13,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -34,16 +34,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import ifpe.mobile.lactgoGo.src.MVM.MainViewModel
 import ifpe.mobile.lactgoGo.src.database.models.RestaurantModel
-import androidx.compose.material3.*
-import androidx.compose.ui.graphics.Color
 
 
 @Composable
@@ -53,121 +53,128 @@ fun PlaceItemCard(
     onSelect: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    place.address?.street
-
     Row(
-        modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp, 8.dp, 8.dp, 8.dp)
-            .background(color = Color.Gray)
+            .padding(8.dp)
+            .background(color = Color(0xFFF1F5F4), shape = RoundedCornerShape(16.dp))
             .clickable { onSelect() },
         verticalAlignment = Alignment.CenterVertically
     ) {
-
-        Spacer(modifier = modifier.size(12.dp))
-        Column(modifier = modifier.weight(1f)) {
+        Column(modifier = Modifier.weight(1f).padding(start = 12.dp)) {
             Text(
-                modifier = modifier,
                 text = place.name,
-                fontSize = 24.sp
+                style = TextStyle(
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 18.sp,
+                    color = Color(0xFF717F7F)
+                )
             )
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
-                modifier = modifier,
                 text = "${place.address?.street}, ${place.address?.number} - ${place.address?.district}",
-                fontSize = 16.sp
+                style = TextStyle(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 16.sp,
+                    color = Color(0xFFA0A0A0)
+                )
             )
+            Spacer(modifier = Modifier.height(2.dp))
             Text(
-                modifier = modifier,
                 text = "${place.openingTime} - ${place.closingTime}",
-                fontSize = 16.sp
+                style = TextStyle(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 16.sp,
+                    color = Color(0xFFA0A0A0)
+                )
             )
-
         }
         IconButton(onClick = onPin) {
-            Icon(Icons.Filled.Place, contentDescription = "Close")
+            Icon(Icons.Filled.Place, contentDescription = "Pin Location", tint = Color(0xFF1C349B))
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExplorePageComp(modifier: Modifier = Modifier, viewModel: MainViewModel, context: Context, navController: NavController) {
+fun ExplorePageComp(
+    modifier: Modifier = Modifier,
+    viewModel: MainViewModel,
+    context: Context,
+    navController: NavController
+) {
     var address by rememberSaveable { mutableStateOf("") }
     val restaurantList by remember { mutableStateOf(viewModel.restaurants) }
-    val activity = LocalContext.current as? Activity
+    val activity: Activity? = LocalContext.current as? Activity
 
-    // Variáveis para controlar o menu
-    var expanded by remember { mutableStateOf(false) }
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = CenterHorizontally,
-    ) {
-        // TopAppBar com menu
-        TopAppBar(
-            title = { Text("Explorar Restaurantes") },
-            actions = {
-                IconButton(onClick = { expanded = true }) {
-                    Icon(Icons.Filled.MoreVert, contentDescription = "Menu")
-                }
-                // Menu suspenso
-                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                    DropdownMenuItem(onClick = {
-                        navController.navigate("edit-profile") // Navegar para EditProfileActivity
-                        expanded = false // Fechar o menu
-                    }) {
-                        Text("Editar Perfil")
-                    }
-                    // Você pode adicionar mais itens de menu aqui se necessário
-                }
-            },
-        )
-
-        OutlinedTextField(
-            value = address, onValueChange = { address = it }, shape = RoundedCornerShape(20.dp),
-            label = { Text(text = "Endereço") },
-            modifier = Modifier
-                .padding(16.dp, 16.dp, 16.dp, 8.dp)
-                .fillMaxWidth(),
-        )
-
-        Spacer(modifier = modifier.size(50.dp))
-
-        ElevatedButton(onClick = { navController.navigate("register") }) {
-            Text(text = "Adicionar restaurante")
-        }
-
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp)
-        ) {
-            items(restaurantList) { restaurant ->
-                PlaceItemCard(
-                    place = restaurant,
-                    onSelect = {
-                        viewModel.setRestaurant(rests = restaurant)
-                        navController.navigate("rest-info")
-                    },
-                    onPin = {
-                        activity?.startActivity(
-                            Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse("http://maps.google.com/maps/dir/?api=1" +
-                                        "&destination=${restaurant.name}, ${restaurant.address?.city}, ${restaurant.address?.country}")
-                            ).setFlags(
-                                FLAG_ACTIVITY_SINGLE_TOP
-                            )
-                        )
-                        Toast.makeText(context, "Lugar fixado", Toast.LENGTH_LONG).show()
-                    }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFFFFFFF))
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                // Campo de Pesquisa de Endereço
+                OutlinedTextField(
+                    value = address,
+                    onValueChange = { address = it },
+                    shape = RoundedCornerShape(20.dp),
+                    label = { Text(text = "Endereço") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
                 )
+
+                // Botão para Adicionar Restaurante
+                ElevatedButton(
+                    onClick = { navController.navigate("register") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(45.dp)
+                        .padding(bottom = 8.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.elevatedButtonColors(containerColor = Color(0xFF1C349B))
+                ) {
+                    Text(
+                        text = "Adicionar restaurante",
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    )
+                }
+
+                // Lista de Locais
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(restaurantList) { restaurant ->
+                        PlaceItemCard(
+                            place = restaurant,
+                            onSelect = {
+                                viewModel.setRestaurant(rests = restaurant)
+                                navController.navigate("rest-info")
+                            },
+                            onPin = {
+                                activity?.startActivity(
+                                    Intent(
+                                        Intent.ACTION_VIEW,
+                                        Uri.parse(
+                                            "http://maps.google.com/maps/dir/?api=1" +
+                                                    "&destination=${restaurant.name}, ${restaurant.address?.city}, ${restaurant.address?.country}"
+                                        )
+                                    ).setFlags(
+                                        Intent.FLAG_ACTIVITY_SINGLE_TOP
+                                    )
+                                )
+                                Toast.makeText(context, "Lugar fixado", Toast.LENGTH_LONG).show()
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
             }
         }
-    }
-}
-
-fun DropdownMenuItem(onClick: () -> Unit, interactionSource: @Composable () -> Unit) {
-
-}

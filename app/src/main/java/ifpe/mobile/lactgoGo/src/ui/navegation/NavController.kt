@@ -15,23 +15,25 @@ import ifpe.mobile.lactgoGo.src.ui.pages.RestaurantInfoPage
 
 
 @Composable
-fun MainNavHost(navController: NavHostController, viewModel: MainViewModel,
-                modifier: Modifier = Modifier,
-                context: Context,
-                database:FirebaseDB
-                ) {
+fun MainNavHost(
+    navController: NavHostController,
+    viewModel: MainViewModel,
+    modifier: Modifier = Modifier,
+    context: Context,
+    database: FirebaseDB
+) {
     NavHost(navController, startDestination = BottomNavItem.HomePage.route) {
         composable(route = BottomNavItem.HomePage.route) {
             ExplorePageComp(viewModel = viewModel, modifier = modifier, context = context, navController = navController)
         }
-        composable("register") { RegisterPlacePage( modifier = modifier, database = database, navController = navController ) }
-        composable("rest-info") { RestaurantInfoPage( viewModel = viewModel, modifier = modifier ) }
-        composable( "edit-profile") { EditProfilePage( viewModel = viewModel, database = database, navController = navController) }
-//        composable(route = BottomNavItem.ListPage.route) {
-//            ListPage(viewModel = viewModel, modifier = modifier, context = context)
-//        }
-//        composable(route = BottomNavItem.MapPage.route) {
-//            MapPage(viewModel = viewModel, modifier = modifier, context = context)
-//        }
+        composable("register") {
+            RegisterPlacePage(modifier = modifier, database = database, navController = navController)
+        }
+        composable("rest-info") {
+            RestaurantInfoPage(viewModel = viewModel, modifier = modifier)
+        }
+        composable(BottomNavItem.EditProfilePage.route) {
+            EditProfilePage(viewModel = viewModel, database = database, navController = navController)
+        }
     }
 }
