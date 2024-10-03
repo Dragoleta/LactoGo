@@ -92,6 +92,7 @@ fun ExplorePageComp(modifier: Modifier = Modifier, viewModel: MainViewModel, con
     var address by rememberSaveable { mutableStateOf("") }
     val restaurantList by remember { mutableStateOf(viewModel.restaurants) }
     val activity = LocalContext.current as? Activity
+    var restaurantToShow by remember { mutableStateOf(restaurantList) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -99,8 +100,12 @@ fun ExplorePageComp(modifier: Modifier = Modifier, viewModel: MainViewModel, con
         horizontalAlignment = CenterHorizontally,
     ) {
         OutlinedTextField(
-            value = address, onValueChange = { address = it }, shape = RoundedCornerShape(20.dp),
-            label = { Text(text = "Address") },
+            value = address, shape = RoundedCornerShape(20.dp),
+            onValueChange = {
+                address = it
+                restaurantToShow = restaurantList.filter { restaurant -> restaurant.name.contains(address) }
+                },
+            label = { Text(text = "Filter") },
             modifier = Modifier
                 .padding(16.dp, 16.dp, 16.dp, 8.dp)
                 .fillMaxWidth(),
@@ -117,28 +122,33 @@ fun ExplorePageComp(modifier: Modifier = Modifier, viewModel: MainViewModel, con
                 .fillMaxSize()
                 .padding(20.dp)
         ) {
-            items(restaurantList) {
-                restaurant -> PlaceItemCard(
-                place = restaurant,
-                onSelect = {
-                    viewModel.setRestaurant(rests = restaurant)
-                   navController.navigate("rest-info")
+            items(restaurantToShow ) {
+                restaurant ->
+                            PlaceItemCard(
+                                place = restaurant,
+                                onSelect = {
+                                    viewModel.setRestaurant(rests = restaurant)
+                                    navController.navigate("rest-info")
 
-                },
-                onPin = {
+                                },
+                                onPin = {
+                                    activity?.startActivity(
+                                        Intent(
+                                            Intent.ACTION_VIEW,
+                                            Uri.parse(
+                                                "http://maps.google.com/maps/dir/?api=1" +
+                                                        "&destination=${restaurant.name}, ${restaurant.address?.city}, ${restaurant.address?.country}"
+                                            )
+                                        ).setFlags(
+                                            FLAG_ACTIVITY_SINGLE_TOP
+                                        )
+                                    )
+                                    Toast.makeText(context, "Place pinned", Toast.LENGTH_LONG)
+                                        .show()
+                                },
+                            )
 
-                    activity?.startActivity(
-                        Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse("http://maps.google.com/maps/dir/?api=1" +
-                                    "&destination=${restaurant.name}, ${restaurant.address?.city}, ${restaurant.address?.country}")
-                        ).setFlags(
-                            FLAG_ACTIVITY_SINGLE_TOP
-                        )
-                    )
-                    Toast.makeText(context, "Place pinned", Toast.LENGTH_LONG).show()
-                },
-            )
+
             }
 
         }
