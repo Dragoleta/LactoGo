@@ -3,6 +3,7 @@ package ifpe.mobile.lactgoGo.src.ui.pages
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -22,7 +23,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -95,86 +95,91 @@ fun PlaceItemCard(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExplorePageComp(
-    modifier: Modifier = Modifier,
     viewModel: MainViewModel,
     context: Context,
     navController: NavController
 ) {
     var address by rememberSaveable { mutableStateOf("") }
-    val restaurantList by remember { mutableStateOf(viewModel.restaurants) }
     val activity: Activity? = LocalContext.current as? Activity
+    val restaurantList by remember { mutableStateOf(viewModel.restaurants) }
+    var restaurantToShow by remember { mutableStateOf(restaurantList) }
 
-            Column(
+
+    Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFFFFFFF))
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            // Campo de Pesquisa de Endereço
+            OutlinedTextField(
+                value = address,
+                onValueChange =  {
+                    address = it
+                    restaurantToShow = restaurantList.filter { restaurant -> restaurant.name.contains(address) }
+                },
+                shape = RoundedCornerShape(20.dp),
+                label = { Text(text = "Filter by name") },
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(0xFFFFFFFF))
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally,
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
+            )
+
+            // Botão para Adicionar Restaurante
+            ElevatedButton(
+                onClick = { navController.navigate("register") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(45.dp)
+                    .padding(bottom = 8.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = ButtonDefaults.elevatedButtonColors(containerColor = Color(0xFF1C349B))
             ) {
-                // Campo de Pesquisa de Endereço
-                OutlinedTextField(
-                    value = address,
-                    onValueChange = { address = it },
-                    shape = RoundedCornerShape(20.dp),
-                    label = { Text(text = "Endereço") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp)
-                )
-
-                // Botão para Adicionar Restaurante
-                ElevatedButton(
-                    onClick = { navController.navigate("register") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(45.dp)
-                        .padding(bottom = 8.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.elevatedButtonColors(containerColor = Color(0xFF1C349B))
-                ) {
-                    Text(
-                        text = "Adicionar restaurante",
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
+                Text(
+                    text = "Adicionar restaurante",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
                     )
-                }
+                )
+            }
 
-                // Lista de Locais
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(restaurantList) { restaurant ->
-                        PlaceItemCard(
-                            place = restaurant,
-                            onSelect = {
-                                viewModel.setRestaurant(rests = restaurant)
-                                navController.navigate("rest-info")
-                            },
-                            onPin = {
-                                activity?.startActivity(
-                                    Intent(
-                                        Intent.ACTION_VIEW,
-                                        Uri.parse(
-                                            "http://maps.google.com/maps/dir/?api=1" +
-                                                    "&destination=${restaurant.name}, ${restaurant.address?.city}, ${restaurant.address?.country}"
-                                        )
-                                    ).setFlags(
-                                        Intent.FLAG_ACTIVITY_SINGLE_TOP
+            // Lista de Locais
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(restaurantToShow ) {
+                        restaurant ->
+                    PlaceItemCard(
+                        place = restaurant,
+                        onSelect = {
+                            viewModel.setRestaurant(rests = restaurant)
+                            navController.navigate("rest-info")
+                        },
+                        onPin = {
+                            activity?.startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse(
+                                        "http://maps.google.com/maps/dir/?api=1" +
+                                                "&destination=${restaurant.name}, ${restaurant.address?.city}, ${restaurant.address?.country}"
                                     )
+                                ).setFlags(
+                                    FLAG_ACTIVITY_SINGLE_TOP
                                 )
-                                Toast.makeText(context, "Lugar fixado", Toast.LENGTH_LONG).show()
-                            },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
+                            )
+                            Toast.makeText(context, "Place pinned", Toast.LENGTH_LONG)
+                                .show()
+                        },
+
+                    )
                 }
             }
         }
+    }

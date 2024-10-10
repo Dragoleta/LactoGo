@@ -24,7 +24,7 @@ fun MainNavHost(
 ) {
     NavHost(navController, startDestination = BottomNavItem.HomePage.route) {
         composable(route = BottomNavItem.HomePage.route) {
-            ExplorePageComp(viewModel = viewModel, modifier = modifier, context = context, navController = navController)
+            ExplorePageComp(viewModel = viewModel, context = context, navController = navController)
         }
         composable("register") {
             RegisterPlacePage(modifier = modifier, database = database, navController = navController)
