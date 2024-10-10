@@ -255,7 +255,6 @@ fun EditProfilePage(
                     Toast.makeText(activity, "Nova senha e confirmação não coincidem!", Toast.LENGTH_LONG).show()
                 }
 
-                activity?.finish() // Finaliza a atividade atual após a atualização
             }
         ) {
             Text(
