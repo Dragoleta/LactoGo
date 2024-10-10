@@ -2,14 +2,14 @@ package ifpe.mobile.lactgoGo.src.database.db
 
 import FBUser
 import User
+import android.annotation.SuppressLint
 import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
+
 import com.google.firebase.firestore.firestore
 import ifpe.mobile.lactgoGo.src.database.models.DishModel
 
@@ -18,9 +18,11 @@ import ifpe.mobile.lactgoGo.src.database.models.RestaurantModel
 import toFBUser
 import toUser
 
+@SuppressLint("MissingPermission")
 class FirebaseDB(private val listener: Listener? = null) {
     private val auth = Firebase.auth
     private val db = Firebase.firestore
+
 
     interface Listener {
         fun onUserLoaded(user: User)
@@ -32,14 +34,15 @@ class FirebaseDB(private val listener: Listener? = null) {
             if (auth.currentUser == null) {
                 return@addAuthStateListener
             }
-            val refCurrUser = db.collection("users")
+            val refCurrUser = db.collection("Users")
                 .document(auth.currentUser!!.uid)
             refCurrUser.get().addOnSuccessListener {
                 it.toObject(FBUser::class.java)?.let { user ->
                     user.toUser()?.let { it1 -> listener?.onUserLoaded(it1) }
                 }
             }
-            getRestaurants()
+
+            getRestaurantsWithParams(variable = "recife", queryParam = "address.city")
         }
     }
 
@@ -90,13 +93,28 @@ class FirebaseDB(private val listener: Listener? = null) {
         db.collection("Users").document(uid + "").set(user.toFBUser())
     }
 
+    fun getRestaurantsWithParams(variable: String, queryParam: String) {
+        val restaurantsRef = db.collection("restaurants")
+        restaurantsRef.whereEqualTo(queryParam, variable).get().addOnSuccessListener { querySnapshot ->
+            val restaurants = querySnapshot.documents.mapNotNull { document ->
+                val restaurant = document.toObject(RestaurantModel::class.java)
+                restaurant?.copy(id = document.id)
+            }
+            listener?.setRestaurants(restaurants)
+        }.addOnFailureListener { exception ->
+            Log.e("FirebaseDB", "Error fetching restaurants", exception)
+        }
+    }
+
+
+
     fun getUser(onComplete: (User?) -> Unit) {
         if (auth.currentUser == null) {
             onComplete(null)
             return
         }
         val uid = auth.currentUser!!.uid
-        db.collection("users").document(uid).get()
+        db.collection("Users").document(uid).get()
             .addOnSuccessListener { document ->
                 val fbUser = document.toObject(FBUser::class.java)
                 onComplete(fbUser?.toUser())
@@ -122,13 +140,12 @@ class FirebaseDB(private val listener: Listener? = null) {
 
     fun updateUser(user: User) {
         val auth = FirebaseAuth.getInstance()
-        val currentUser = auth.currentUser
 
         if (auth.currentUser == null) {
             throw RuntimeException("User not logged in!")
         }
         val uid = auth.currentUser!!.uid
-        db.collection("users").document(uid).set(user.toFBUser())
+        db.collection("Users").document(uid).set(user.toFBUser())
             .addOnSuccessListener {
                 Log.d("FirebaseDB", "User updated successfully!")
             }

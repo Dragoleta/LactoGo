@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import ifpe.mobile.lactgoGo.src.ui.theme.MyApplicationTheme
 import androidx.compose.foundation.layout.Box
-
 import android.Manifest
 import androidx.activity.viewModels
 import androidx.compose.runtime.remember
@@ -42,7 +41,7 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val context = LocalContext.current
             val viewModel : MainViewModel by viewModels()
-            val fbDB = remember { FirebaseDB(viewModel) }
+            val fbDB = remember { FirebaseDB(listener = viewModel) }
 
             MyApplicationTheme {
                 Scaffold(
